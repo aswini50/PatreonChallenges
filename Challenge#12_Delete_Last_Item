@@ -1,0 +1,76 @@
+package patreon;
+
+import static io.restassured.RestAssured.get;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+
+import org.apache.http.HttpStatus;
+import org.testng.annotations.Test;
+
+import io.restassured.response.Response;
+
+
+public class ChallengesTest {
+	
+	String getToDoURL = "https://apichallenges.herokuapp.com/todos";
+	String getIDToDoURL = "https://apichallenges.herokuapp.com/todos/{item_id}";
+	String DeleteToDoURL = "https://apichallenges.herokuapp.com/todos/{item_id}";
+	Response  toDoResponse = get(getToDoURL);
+	//toDoResponse.prettyPrint();
+	int firstItem_id = toDoResponse.path("todos[0].id");
+	int lastItem_id = toDoResponse.path("todos[-1].id");
+
+
+  @Test
+  public void challenge1Test() {
+    //throw new RuntimeException("Test not implemented");
+	//System.out.println(countryResponse);
+	//String getToDoURL = "https://apichallenges.herokuapp.com/todos";
+	//Response  toDoResponse = get(toDoURL);
+	 System.out.println("Items List Display inside GET Operation ");
+	 toDoResponse.prettyPrint();
+	//int firstItem_id = toDoResponse.path("todos[0].id");
+	//int lastItem_id = toDoResponse.path("todos[-1].id");
+	System.out.println("First ItemID is :"+ firstItem_id);
+	System.out.println("Last ItemID is : "+ lastItem_id);		
+			given().
+			get(getToDoURL).
+			then().
+			statusCode(HttpStatus.SC_OK) ;
+			//int toDoSize = toDoResponse.size();
+
+
+
+  }
+
+  @Test
+  public void challenge2Test() {
+	    //String deleteToDoURL = "https://apichallenges.herokuapp.com/todos";
+		//Response  toDoResponse = get(toDoURL);
+	    System.out.println("Items List Display inside Delete Operation ");
+		toDoResponse.prettyPrint();
+		//int firstItem_id = toDoResponse.path("todos[0].id");
+		//int lastItem_id = toDoResponse.path("todos[-1].id");
+		//System.out.println("First ItemID is :"+ firstItem_id);
+		//System.out.println("Last ItemID is : "+ lastItem_id);		
+				given().
+				pathParam("item_id",lastItem_id).
+				delete(DeleteToDoURL).
+				then().
+				statusCode(HttpStatus.SC_OK) ;
+				//int toDoSize = toDoResponse.size();
+				//pathParam("customer_id",customer_id)
+	//Verifying successful deletion
+				given().
+				pathParam("item_id",lastItem_id).
+				get(getIDToDoURL).
+				then().
+				statusCode(HttpStatus.SC_NOT_FOUND).
+				extract().
+				response().
+			    prettyPrint();
+				}
+				
+    //throw new RuntimeException("Test not implemented");
+  }
+
